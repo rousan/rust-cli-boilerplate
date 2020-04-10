@@ -1,0 +1,15 @@
+[package]
+name = "rust-cli-boilerplate"
+version = "0.1.0"
+description = "A boilerplate for the Rust command line applications."
+homepage = "https://github.com/rousan/rust-cli-boilerplate"
+repository = "https://github.com/rousan/rust-cli-boilerplate"
+keywords = ["rust", "cli", "boilerplate", "template"]
+categories = ["command-line-utilities"]
+authors = ["Rousan Ali <rousanali786@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+edition = "2018"
+
+[dependencies]
+clap = "2.33"

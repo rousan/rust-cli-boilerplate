@@ -1,0 +1,44 @@
+tasks:
+  setup:
+    run:
+      - command: cargo install cargo-watch
+  dev:
+    run:
+      - command: cargo watch --watch ./src -x run
+  start:
+    run:
+      - task: build:prod
+      - command: ./target/release/neo
+  build:prod:
+    run:
+      - command: cargo build --release
+  build:dev:
+    run:
+      - command: cargo build
+  build:
+    run:
+      task: build:prod
+  test:prod:
+    run:
+      - command: cargo test --release
+  test:dev:
+    run:
+      - command: cargo test
+  test:
+    run:
+      task: test:prod
+  test:v:
+    options:
+      tests:
+        default: ""
+    run:
+      command: cargo test "${tests}" -- --nocapture
+  check:prod:
+    run:
+      - command: cargo check --release
+  check:dev:
+    run:
+      - command: cargo watch --watch ./src -x check
+  check:
+    run:
+      task: check:prod
