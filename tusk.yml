@@ -1,44 +1,25 @@
 tasks:
   setup:
     run:
-      - command: cargo install cargo-watch
-  dev:
-    run:
-      - command: cargo watch --watch ./src -x run
-  start:
-    run:
-      - task: build:prod
-      - command: ./target/release/neo
-  build:prod:
+      - command: cargo install cross
+      - command: go get github.com/aktau/github-release
+  build:macos:
     run:
       - command: cargo build --release
-  build:dev:
+      - command: mkdir -p dist && tar cfJ ./dist/rust-cli-boilerplate-x86_64-apple-darwin.tar.xz ./target/release/rust-cli-boilerplate
+  build:linux:
     run:
-      - command: cargo build
+      - command: cross build --release --target x86_64-unknown-linux-gnu
+      - command: mkdir -p dist && tar cfJ ./dist/rust-cli-boilerplate-x86_64-unknown-linux-gnu.tar.xz ./target/x86_64-unknown-linux-gnu/release/rust-cli-boilerplate
+  build:windows:
+    run:
+      - command: cross build --release --target x86_64-pc-windows-gnu
+      - command: mkdir -p dist && zip ./dist/rust-cli-boilerplate-x86_64-pc-windows-gnu.zip ./target/x86_64-pc-windows-gnu/release/rust-cli-boilerplate.exe
   build:
     run:
-      task: build:prod
-  test:prod:
+      - task: build:macos
+      - task: build:linux
+      - task: build:windows
+  upload-artifacts:
     run:
-      - command: cargo test --release
-  test:dev:
-    run:
-      - command: cargo test
-  test:
-    run:
-      task: test:prod
-  test:v:
-    options:
-      tests:
-        default: ""
-    run:
-      command: cargo test "${tests}" -- --nocapture
-  check:prod:
-    run:
-      - command: cargo check --release
-  check:dev:
-    run:
-      - command: cargo watch --watch ./src -x check
-  check:
-    run:
-      task: check:prod
+      command: chmod +x scripts/upload-artifacts.sh && ./scripts/upload-artifacts.sh
